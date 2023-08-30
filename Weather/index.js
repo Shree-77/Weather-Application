@@ -33,7 +33,7 @@ async function getLocation() {
 }
 
 async function getWeather(CityKey) {
-    const response = await fetch(`http://dataservice.accuweather.com/forecasts/v1/daily/1day/${CityKey}?apikey=${apiKey}`, { mode: 'cors' });
+    const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/1day/${CityKey}?apikey=${apiKey}`, { mode: 'cors' });
     const weather = await response.json();
     let FarenheitMin = `${weather["DailyForecasts"][0]["Temperature"]["Minimum"]['Value']}`;
     let FarenheitMax = `${weather["DailyForecasts"][0]["Temperature"]["Maximum"]['Value']}`;
