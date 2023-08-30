@@ -22,7 +22,7 @@ summary.classList.add('summary');
 console.log(city);
 
 async function getLocation() {
-    const response = await fetch(`http://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${city}`, { mode: 'cors' });
+    const response = await fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${city}`, { mode: 'cors' });
     const location = await response.json();
     if (location.length > 0) {
         const cityName = location[0]["Key"];
