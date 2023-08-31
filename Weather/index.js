@@ -11,7 +11,7 @@ Desc.classList.add('Desc');
 
 
 async function getLocation(city) {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`, { mode: 'cors' });
+    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`, { mode: 'cors' });
     const location = await response.json();
     if (location.length > 0) {
         const lat = location[0]["lat"];
@@ -26,7 +26,6 @@ async function getLocation(city) {
 async function getWeather(lat, long) {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`, { mode: 'cors' });
     const weather = await response.json();
-    console.log(weather);
     const temp = weather['main']['temp'];
     Desc.textContent = `Summary : ${weather['weather'][0]['description']}`;
     TempF.textContent = `Farenheit : ${(convertF(temp).toFixed(2))}`;
