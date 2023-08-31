@@ -1,63 +1,54 @@
-const apiKey = 'lDTXnCLt9yBYkKiRzl8UmbEazHYn4ALD';
+const apiKey = 'a11d5e4b0429b36bea1270b7d91dfdf3';
 const submit = document.querySelector('button');
-let city = '';
-
-
 const output = document.querySelector('.Output');
-const Cname = document.createElement('h3');
-Cname.textContent = city;
-Cname.classList.add('cityName');
+const TempF = document.createElement('p')
+const TempC = document.createElement('p');
+const Desc = document.createElement('p');
 
-const minF = document.createElement('p');
-minF.classList.add('MinF');
-const maxF = document.createElement('p');
-maxF.classList.add('MaxF');
-const minC = document.createElement('p');
-minC.classList.add('MinC');
-const maxC = document.createElement('p');
-maxC.classList.add('MaxC');
-const summary = document.createElement('p');
-summary.classList.add('summary');
+TempF.classList.add('TempF');
+TempC.classList.add('TempC');
+Desc.classList.add('Desc');
 
-console.log(city);
 
-async function getLocation() {
-    const response = await fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=${apiKey}&q=${city}`, { mode: 'cors' });
+async function getLocation(city) {
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`, { mode: 'cors' });
     const location = await response.json();
     if (location.length > 0) {
-        const cityName = location[0]["Key"];
-        getWeather(`${cityName}`);
+        const lat = location[0]["lat"];
+        const lon = location[0]["lon"];
+        getWeather(lat, lon);
     } else {
-        alert('Location not Found');
+        alert('City not Found');
     }
+
 }
 
-async function getWeather(CityKey) {
-    const response = await fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/1day/${CityKey}?apikey=${apiKey}`, { mode: 'cors' });
+async function getWeather(lat, long) {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`, { mode: 'cors' });
     const weather = await response.json();
-    let FarenheitMin = `${weather["DailyForecasts"][0]["Temperature"]["Minimum"]['Value']}`;
-    let FarenheitMax = `${weather["DailyForecasts"][0]["Temperature"]["Maximum"]['Value']}`;
-    let CelsiusMin = ((FarenheitMin - 32) * (5 / 9)).toFixed(2);
-    let CelsiusMax = ((FarenheitMax - 32) * (5 / 9)).toFixed(2);
-    let desc = `${weather["DailyForecasts"][0]["Day"]["IconPhrase"]}`
-    maxF.textContent = `Maximum Farenheit = ${FarenheitMax}`;
-    minF.textContent = `Minimum Fareheit = ${FarenheitMin}`;
-    maxC.textContent = `Maximum Celcius = ${CelsiusMax}`;
-    minC.textContent = `Minimum Celcius =${CelsiusMin}`;
-    summary.textContent = `Summary = ${desc}`;
+    console.log(weather);
+    const temp = weather['main']['temp'];
+    Desc.textContent = `Summary : ${weather['weather'][0]['description']}`;
+    TempF.textContent = `Farenheit : ${(convertF(temp).toFixed(2))}`;
+    TempC.textContent = `Celcius : ${(convertC(temp).toFixed(2))}`;
+    output.appendChild(TempF);
+    output.appendChild(TempC);
+    output.appendChild(Desc);
+
+}
+
+function convertF(Kelvin) {
+    return (Kelvin - 273.15) * (9 / 5) + 32;
+}
+function convertC(Kelvin) {
+    return Kelvin - 273.15;
 }
 
 
-output.appendChild(Cname);
-output.appendChild(minF);
-output.appendChild(maxF);
-output.appendChild(minC);
-output.appendChild(maxC);
-output.appendChild(summary);
+
 submit.addEventListener('click', (e) => {
     e.preventDefault();
-    city = document.querySelector('input').value;
-    Cname.textContent = `City : ${city}`;
-    getLocation();
+    let city = document.querySelector('input').value;
+    getLocation(city);
 })
 
