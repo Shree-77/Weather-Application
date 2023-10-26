@@ -6,6 +6,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',  
     path: path.resolve(__dirname, 'dist'),  
+    publicPath: "/Weather-Application/",
   },
   module: {  // This section should be inside the main configuration object
     rules: [
