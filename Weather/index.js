@@ -1,6 +1,6 @@
 const apiKey = 'a11d5e4b0429b36bea1270b7d91dfdf3';
 const submit = document.querySelector('button');
-const output = document.querySelector('.Output');
+const output = document.querySelector('.output');
 const TempF = document.createElement('p')
 const TempC = document.createElement('p');
 const Desc = document.createElement('p');
@@ -30,6 +30,9 @@ async function getWeather(lat, long) {
     Desc.textContent = `Summary : ${weather['weather'][0]['description']}`;
     TempF.textContent = `Farenheit : ${(convertF(temp).toFixed(2))}`;
     TempC.textContent = `Celcius : ${(convertC(temp).toFixed(2))}`;
+    console.log(TempC);
+    console.log(TempF);
+    console.log(Desc);
     output.appendChild(TempF);
     output.appendChild(TempC);
     output.appendChild(Desc);
