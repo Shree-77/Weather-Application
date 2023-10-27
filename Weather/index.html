@@ -8,17 +8,13 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="search">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="search-1"> <i class='bx bx-search-alt'></i> <input type="text" placeholder="City Name">
-                        <button type="submit">Search</button>
-                    </div>
-                </div> 
-            </div>
-        </div>
+    <div class="search">
+        <input type="text" id="locationInput" placeholder="City name" name="search">
+        <button type="button" id="searchButton">Submit</button>
     </div>
-  <div class="output"></div>
+    <div class="output">
+        <div id="weatherInfo"></div>
+    </div>
 </body>
+
 </html>
