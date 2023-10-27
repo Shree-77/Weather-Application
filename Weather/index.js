@@ -1,56 +1,56 @@
-const apiKey = 'a11d5e4b0429b36bea1270b7d91dfdf3';
-const submit = document.querySelector('button');
-const output = document.querySelector('.output');
-const TempF = document.createElement('p')
-const TempC = document.createElement('p');
-const Desc = document.createElement('p');
+const API_KEY = '4b01ba555e2f402cbbb35347232908';
+const API_URL = 'https://api.weatherapi.com/v1/forecast.json?';
 
-TempF.classList.add('TempF');
-TempC.classList.add('TempC');
-Desc.classList.add('Desc');
+const locationInput = document.getElementById('locationInput');
+const searchButton = document.getElementById('searchButton');
+const weatherInfo = document.getElementById('weatherInfo');
 
-
-async function getLocation(city) {
-    const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`, { mode: 'cors' });
-    const location = await response.json();
-    if (location.length > 0) {
-        const lat = location[0]["lat"];
-        const lon = location[0]["lon"];
-        getWeather(lat, lon);
+function isDay(is_day, body) {
+    body.style.backgroundImage = 'none'; 
+    if (is_day) {
+        const dayBackgroundURL = './static/images/day.svg';
+        body.style.backgroundImage = `url(${dayBackgroundURL})`;
     } else {
-        alert('City not Found');
+        const nightBackgroundURL = './static/images/night.svg';
+        body.style.backgroundImage = `url(${nightBackgroundURL})`;
     }
-
 }
 
-async function getWeather(lat, long) {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`, { mode: 'cors' });
-    const weather = await response.json();
-    const temp = weather['main']['temp'];
-    Desc.textContent = `Summary : ${weather['weather'][0]['description']}`;
-    TempF.textContent = `Farenheit : ${(convertF(temp).toFixed(2))}`;
-    TempC.textContent = `Celcius : ${(convertC(temp).toFixed(2))}`;
-    console.log(TempC);
-    console.log(TempF);
-    console.log(Desc);
-    output.appendChild(TempF);
-    output.appendChild(TempC);
-    output.appendChild(Desc);
+async function getWeather(location, days = '3') {
+    const response = await fetch(API_URL + 'key=' + API_KEY + '&q=' + location + '&days=' + days + '&aqi=no&alerts=no', {
+        mode: 'cors'
+    });
+    const data = await response.json();
+    if (data.error) {
+        alert('City not found');
+        return;
+    }
+    console.log(data);
+    const is_Day = data.current.is_day === 1;
 
+    isDay(is_Day, document.body);
+
+    weatherInfo.innerHTML = '';
+
+    data.forecast.forecastday.forEach((day, index) => {
+        const dayIndex = ['Today', 'Tomorrow', 'The day after tomorrow'][index];
+        const dayForecast = `
+            <div class="day-forecast">
+                <p>${dayIndex}</p>
+                <p>Celsius Max: ${day.day.maxtemp_c}°C</p>
+                <p>Celsius Min: ${day.day.mintemp_c}°C</p>
+                <p>Condition: ${day.day.condition.text}</p>
+            </div>
+        `;
+
+        const dayForecastDiv = document.createElement('div');
+        dayForecastDiv.classList.add('day-forecast-container');
+        dayForecastDiv.innerHTML = dayForecast;
+        weatherInfo.appendChild(dayForecastDiv);
+    });
 }
 
-function convertF(Kelvin) {
-    return (Kelvin - 273.15) * (9 / 5) + 32;
-}
-function convertC(Kelvin) {
-    return Kelvin - 273.15;
-}
-
-
-
-submit.addEventListener('click', (e) => {
-    e.preventDefault();
-    let city = document.querySelector('input').value;
-    getLocation(city);
-})
-
+searchButton.addEventListener('click', () => {
+    const location = locationInput.value;
+    getWeather(location);
+});
