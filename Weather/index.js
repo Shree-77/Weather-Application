@@ -1,4 +1,5 @@
-const API_KEY = '4b01ba555e2f402cbbb35347232908';
+document.addEventListener('DOMContentLoaded',()=>{
+    const API_KEY = '4b01ba555e2f402cbbb35347232908';
 const API_URL = 'https://api.weatherapi.com/v1/forecast.json?';
 
 const locationInput = document.getElementById('locationInput');
@@ -54,3 +55,5 @@ searchButton.addEventListener('click', () => {
     const location = locationInput.value;
     getWeather(location);
 });
+
+})
